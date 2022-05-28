@@ -1,0 +1,87 @@
+# stage1
+
+# username
+import pandas
+import pandas as pd
+import openpyxl
+import xlsxwriter
+from openpyxl import load_workbook, writer, worksheet
+
+un = input("Username: ")
+pw = input("Password: ")
+a = un[0]
+num = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
+x = un.find('@')
+y = un.find('.')
+flag_un = False
+flag_pw = False
+import re
+
+sc_check = re.compile('[@_!#$%^&*()<>?/\|}{~:]')
+if sc_check.search(a) != None or a in num:
+    print('enter valid email id')
+elif x == None or y == None or x >= y - 1:
+    print('enter valid email id')
+else:
+    flag_un = True
+
+# password
+flag_u = False
+flag_v = False
+flag_w = False
+
+for i in range(0, len(pw)):
+    if pw[i].isupper():
+        flag_u = True
+        break
+
+for j in range(0, len(pw)):
+    if pw[j].islower():
+        flag_v = True
+        break
+
+for k in range(0, len(pw)):
+    if pw[k] in num:
+        flag_w = True
+        break
+
+if 5 <= len(pw) <= 16:
+    if flag_u == True:
+        if flag_v == True:
+            if flag_w == True:
+                if sc_check.search(pw) != None:
+                    flag_pw = True
+
+    # stage2
+
+    workbook = load_workbook('registerDetails.xlsx')
+    reader = pd.read_excel(r'registerDetails.xlsx')
+    df1 = pandas.DataFrame(data= [[un,pw]], columns=['Username','Password'])
+    #df2 = pandas.DataFrame(pw, columns='Pawword')
+    reader = pandas.concat([reader, df1], ignore_index=False)
+    reader.to_excel("registerDetails.xlsx", index=False)
+    # rowIndex = len(reader) + 1
+    # rowIndex = writer.sheets['Sheet1'].max_row
+    # print(rowIndex)
+    # if flag_un == True and flag_pw == True:
+    # workbook.worksheets.write('A' + str(rowIndex), un)
+    # workbook.worksheets.write('B' + str(rowIndex), pw)
+    # sheetname in writer.sheets:
+
+    workbook.close()
+    
+    import xlsxwriter
+workbook = xlsxwriter.Workbook('registerDetails.xlsx')
+worksheet = workbook.add_worksheet('sheet 1')
+
+worksheet.write('A1', 'Username')
+worksheet.write('B1', 'Password')
+workbook.close()
+
+ df = pd.DataFrame({'Username': [un], 'Password': [pw]})
+    writer = pd.ExcelWriter('registerDetails.xlsx', engine='openpyxl', mode='a')
+    writer.book = load_workbook('registerDetails.xlsx')
+    writer.sheets = dict((ws.title, ws) for ws in writer.book.worksheets)
+    reader = pd.read_excel(r'RegDetail.xlsx')
+    data.to_excel(writer, index=False, header=False, startrow=len(reader)+1)
+    writer.save()
